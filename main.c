@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <math.h>
 
-
-
 typedef struct Color {
 	float r;
 	float g;
@@ -37,27 +35,23 @@ Complex cMul(Complex a, Complex  b) {
 	return atanf(a.r / a.i);
 }
 
-
-
-
+// Segfaults if allocated on the stack.
+const int width = 1000;
+const int height = 1000;
+Color pixels[height][width];
 
 int main (int argc, const char * argv[]) {
 
-    fprintf( stdout, "hello world\n" );
 
 	float x = -0.7463;
 	float y = 0.1102;
 	float r = 0.005;
-
-	int width = 1000;
-	int height = 1000;
 
 	float minX = x - r;
 	float maxX = x + r;
 	float minY = y - r;
 	float maxY = y + r;
 
-    Color pixels[height][width];
 	for (int y = 0; y < height; ++y) {
 		for (int x = 0; x < width; ++x) {
 			Complex c = {
@@ -84,7 +78,6 @@ int main (int argc, const char * argv[]) {
 				.b = 0,
 			};
 
-    fprintf( stdout, "u: %f\n", u);
 			pixels[y][x] = color;
 		}
 	}
