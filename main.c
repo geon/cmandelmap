@@ -25,6 +25,17 @@ Complex cMul(Complex a, Complex  b) {
 	};
 }
 
+float cLength(Complex a);
+float cAngle(Complex a);
+Complex cPow(Complex a, float power) {
+	float lengthRaised = powf(cLength(a), power);
+	float powerAngle = power * cAngle(a);
+	return (Complex) {
+		.r = lengthRaised * cosf(powerAngle),
+		.i = lengthRaised * sinf(powerAngle)
+	};
+}
+
  float cLengthSquared(Complex a) {
 	return a.r * a.r + a.i * a.i;
 }
