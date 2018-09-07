@@ -34,7 +34,7 @@ Complex cMul(Complex a, Complex  b) {
 }
 
  float cAngle(Complex a) {
-	return atanf(a.r / a.i);
+	return atan2f(a.i, a.r);
 }
 
 unsigned char clampAndChar (float a) {
@@ -87,7 +87,7 @@ int main (int argc, const char * argv[]) {
 			float u = cLength(z)+0.65;
 			float v = cAngle(z) / (M_PI * 2);
 			u = (u - 0.75) * 0.5; 
-			v = (v+0.25)*2;
+			v = (v+0.5) ;
 
     // fprintf( stdout, "%f %f %u %u \n", u, v, clampAndChar(u), clampAndChar(v) );
 	// exit(0);
