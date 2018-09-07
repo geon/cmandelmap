@@ -1,5 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
+#include "bmp.h"
 
 typedef struct Color {
 	float r;
@@ -35,6 +37,15 @@ Complex cMul(Complex a, Complex  b) {
 	return atanf(a.r / a.i);
 }
 
+unsigned char clampAndChar (float a) {
+	int b = (int) (a * 255);
+	
+	if(b < 0) return 0;
+	if(b > 255) return 255;
+
+	return b;
+}
+
 // Segfaults if allocated on the stack.
 const int width = 1000;
 const int height = 1000;
@@ -43,9 +54,13 @@ Color pixels[height][width];
 int main (int argc, const char * argv[]) {
 
 
-	float x = -0.7463;
-	float y = 0.1102;
-	float r = 0.005;
+	// float x = -0.7463;
+	// float y = 0.1102;
+	// float r = 0.005;
+	
+	float x = -0.25;
+	float y = 0;
+	float r = 2;
 
 	float minX = x - r;
 	float maxX = x + r;
@@ -64,13 +79,18 @@ int main (int argc, const char * argv[]) {
 				.i = 0,
 			};
 
-			int iterations = 10;
+			int iterations = 7;
 			for (int i = 0; i < iterations; ++i) {
 				z = cAdd(cMul(z, z), c);
 			}
 
-			float u = cLength(z);
+			float u = cLength(z)+0.65;
 			float v = cAngle(z) / (M_PI * 2);
+			u = (u - 0.75) * 0.5; 
+			v = (v+0.25)*2;
+
+    // fprintf( stdout, "%f %f %u %u \n", u, v, clampAndChar(u), clampAndChar(v) );
+	// exit(0);
 
 			Color color = {
 				.r = u,
@@ -81,6 +101,22 @@ int main (int argc, const char * argv[]) {
 			pixels[y][x] = color;
 		}
 	}
+
+
+
+    unsigned char image[height][width][3];
+    char* imageFileName = "bitmapImage.bmp";
+
+    int i, j;
+    for(i=0; i<height; i++){
+        for(j=0; j<width; j++){
+            image[i][j][2] = clampAndChar(pixels[i][j].r);
+            image[i][j][1] = clampAndChar(pixels[i][j].g);
+            image[i][j][0] = clampAndChar(pixels[i][j].b);
+        }
+    }
+
+    generateBitmapImage((unsigned char *)image, height, width, imageFileName);
 
     fprintf( stdout, "hello world\n" );
 }
