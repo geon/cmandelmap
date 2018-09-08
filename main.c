@@ -147,19 +147,19 @@ int main (int argc, const char * argv[]) {
 
 
 
-    unsigned char image[height][width][3];
+    unsigned char* image = malloc(height * width * 3);
     char* imageFileName = "bitmapImage.bmp";
 
     int i, j;
     for(i=0; i<height; i++){
         for(j=0; j<width; j++){
-            image[i][j][2] = clampAndChar(pixels[i][j].r);
-            image[i][j][1] = clampAndChar(pixels[i][j].g);
-            image[i][j][0] = clampAndChar(pixels[i][j].b);
+            image[(i*width + j) * 3 + 2] = clampAndChar(pixels[i][j].r);
+            image[(i*width + j) * 3 + 1] = clampAndChar(pixels[i][j].g);
+            image[(i*width + j) * 3 + 0] = clampAndChar(pixels[i][j].b);
         }
     }
 
-    generateBitmapImage((unsigned char *)image, height, width, imageFileName);
+    generateBitmapImage(image, height, width, imageFileName);
 
     fprintf( stdout, "hello world\n" );
 }
