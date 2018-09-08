@@ -135,9 +135,6 @@ int main (int argc, const char * argv[]) {
 			float v = cAngle(z) / (M_PI * 2);
 			v = (v+0.5) ;
 
-    // fprintf( stdout, "%f %f %u %u \n", u, v, clampAndChar(u), clampAndChar(v) );
-	// exit(0);
-
 			Color color = {
 				.r = fmod(q, 1),
 				.g = v,
