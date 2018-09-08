@@ -57,6 +57,13 @@ unsigned char clampAndChar (float a) {
 	return b;
 }
 
+// https://www.researchgate.net/figure/Common-neural-network-activation-functions_fig7_305881131
+float hyperbolicTangentActivation (float z) {
+	float posez = expf(+z);
+	float negez = expf(-z);
+	return (posez - negez) / (posez + negez);
+}
+
 // Segfaults if allocated on the stack.
 const int width = 1000;
 const int height = 1000;
