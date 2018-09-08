@@ -97,21 +97,49 @@ int main (int argc, const char * argv[]) {
 				.i = 0,
 			};
 
-			int iterations = 7;
-			for (int i = 0; i < iterations; ++i) {
+			int i = 0;
+			// const int iterations = 20;
+			const int iterations = 35;
+			const int continousDistanceImprovmentSteps = 4;
+			// The traditional Mandelbrot iterations.
+			for (; i < iterations - continousDistanceImprovmentSteps && cLengthSquared(z) < 2*2; ++i) {
 				z = cAdd(cMul(z, z), c);
 			}
 
-			float u = cLength(z)+0.65;
+			// Do a couple of extra iterations to get a nice, smooth continous distance.
+			// http://linas.org/art-gallery/escape/escape.html
+			for (int stop = i + continousDistanceImprovmentSteps; i < stop; ++i) {
+				z = cAdd(cMul(z, z), c);
+			}
+
+			float u = i + 1 - logf(logf(cLength(z))) / logf(2);
+
+			// More iterations until a fixed number, to get the angle.
+			const float cutoffDistance = 100;
+			for (; i < iterations; ++i) {
+				z = cAdd(cMul(z, z), c);
+
+				// Limit the growth of z, or it overflows the floats quickly.
+				const float zLength = cLength(z);
+				if (zLength > cutoffDistance) {
+					z.r = z.r / zLength * cutoffDistance;
+					z.i = z.i / zLength * cutoffDistance;
+				}
+			}
+
+			float w = cLength(z);
+
+			float q = w < 1 ? w : u;
+		
+
 			float v = cAngle(z) / (M_PI * 2);
-			u = (u - 0.75) * 0.5; 
 			v = (v+0.5) ;
 
     // fprintf( stdout, "%f %f %u %u \n", u, v, clampAndChar(u), clampAndChar(v) );
 	// exit(0);
 
 			Color color = {
-				.r = u,
+				.r = fmod(q, 1),
 				.g = v,
 				.b = 0,
 			};
