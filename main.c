@@ -97,10 +97,15 @@ int main (int argc, const char * argv[]) {
 				.i = 0,
 			};
 
+			// The number of iterations.
+			// For low values, of if you see banding in u, lower it and raise `continousDistanceImprovmentSteps` instead.
+			const int iterations = 6;
+
+			// Should be roughly half of `iterations`, but feel free to experiment.
+			const int continousDistanceImprovmentSteps = iterations / 2;
+
 			int i = 0;
-			// const int iterations = 20;
-			const int iterations = 35;
-			const int continousDistanceImprovmentSteps = 4;
+
 			// The traditional Mandelbrot iterations.
 			for (; i < iterations - continousDistanceImprovmentSteps && cLengthSquared(z) < 2*2; ++i) {
 				z = cAdd(cMul(z, z), c);
