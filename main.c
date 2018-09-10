@@ -117,6 +117,7 @@ int main (int argc, const char * argv[]) {
 				z = cAdd(cMul(z, z), c);
 			}
 
+			// The contious distance. Looks nice outside the Mandlebrot set.
 			float u = i + 1 - logf(logf(cLength(z))) / logf(2);
 
 			// More iterations until a fixed number, to get the angle.
@@ -132,11 +133,13 @@ int main (int argc, const char * argv[]) {
 				}
 			}
 
+			// This looks nice inside the Mandlebrot set.
 			float w = cLength(z);
 
+			// Combining inside and outside. Since `u` gets smaller, while `w` gets
+			// larger further away from origo, they can be combined with a simple min.
 			float q = fmin(w, u);
 		
-
 			float v = cAngle(z) / (M_PI * 2);
 			v = (v+0.5) ;
 
@@ -149,8 +152,6 @@ int main (int argc, const char * argv[]) {
 			pixels[y][x] = color;
 		}
 	}
-
-
 
     unsigned char* image = malloc(height * width * 3);
     char* imageFileName = "bitmapImage.bmp";
