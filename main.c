@@ -76,7 +76,7 @@ int main (int argc, const char * argv[]) {
 	// float y = 0.1102;
 	// float r = 0.005;
 	
-	float x = -0.25;
+	float x = -0.5;
 	float y = 0;
 	float r = 2;
 
