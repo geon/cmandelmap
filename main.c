@@ -129,7 +129,7 @@ int main (int argc, const char * argv[]) {
 
 			float w = cLength(z);
 
-			float q = w < 1 ? w : u;
+			float q = fmin(w, u);
 		
 
 			float v = cAngle(z) / (M_PI * 2);
