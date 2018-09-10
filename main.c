@@ -161,5 +161,5 @@ int main (int argc, const char * argv[]) {
 
     generateBitmapImage(image, height, width, imageFileName);
 
-    fprintf( stdout, "hello world\n" );
+    fprintf( stdout, "Done.\n" );
 }
