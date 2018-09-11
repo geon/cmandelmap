@@ -72,13 +72,23 @@ Color pixels[height][width];
 int main (int argc, const char * argv[]) {
 
 
-	// float x = -0.7463;
-	// float y = 0.1102;
-	// float r = 0.005;
-	
-	float x = -0.5;
-	float y = 0;
-	float r = 2;
+	// const float x = -0.7463;
+	// const float y = 0.1102;
+	// const float r = 0.005;
+	// const int iterations = 8;
+	// const int continousDistanceImprovmentSteps = 4;
+
+	const float x = -0.7335;
+	const float y = 0.287;
+	const float r = 0.008;
+	const int iterations = 40;
+	const int continousDistanceImprovmentSteps = 6;
+
+	// const float x = -0.5;
+	// const float y = 0;
+	// const float r = 2;
+	// const int iterations = 6;
+	// const int continousDistanceImprovmentSteps = 3;
 
 	float minX = x - r;
 	float maxX = x + r;
@@ -97,12 +107,6 @@ int main (int argc, const char * argv[]) {
 				.i = 0,
 			};
 
-			// The number of iterations.
-			// For low values, of if you see banding in u, lower it and raise `continousDistanceImprovmentSteps` instead.
-			const int iterations = 6;
-
-			// Should be roughly half of `iterations`, but feel free to experiment.
-			const int continousDistanceImprovmentSteps = iterations / 2;
 
 			int i = 0;
 
