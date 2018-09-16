@@ -64,6 +64,15 @@ float hyperbolicTangentActivation (float z) {
 	return (posez - negez) / (posez + negez);
 }
 
+float positiveModulo(float a) {
+	double foo;
+	a = modf(a, &foo);
+	if(a < 0) {
+		a += 1;
+	}
+	return a;
+}
+
 // Segfaults if allocated on the stack.
 const int width = 1000;
 const int height = 1000;
@@ -71,24 +80,55 @@ Color pixels[height][width];
 
 int main (int argc, const char * argv[]) {
 
+	unsigned char *texture;
+	int textureHeight;
+	int textureWidth;
+	// char* textureFileName = "test.bmp";
+	// char* textureFileName = "ceramic-tile.bmp";
 
-	// const float x = -0.7463;
-	// const float y = 0.1102;
-	// const float r = 0.005;
-	// const int iterations = 8;
-	// const int continousDistanceImprovmentSteps = 4;
+	// const float x = -0.9;
+	// const float y = 0.2573;
+	// const float r = 0.0015;
+	// const int iterations = 33;
+	// const int continousDistanceImprovmentSteps = 3;
+	// char* textureFileName = "fruit.bmp";
 
-	const float x = -0.7335;
-	const float y = 0.287;
-	const float r = 0.008;
-	const int iterations = 40;
-	const int continousDistanceImprovmentSteps = 6;
+	// const float x = -0.727;
+	// const float y = 0.282;
+	// const float r = 0.01;
+	// const int iterations = 40;
+	// const int continousDistanceImprovmentSteps = 6;
+	// char* textureFileName = "rose.bmp";
+
+	// const float x = -0.7335;
+	// const float y = 0.3;
+	// const float r = 0.17;
+	// const int iterations = 11;
+	// const int continousDistanceImprovmentSteps = 5;
+	// char* textureFileName = "ceramic-tile2.bmp";
 
 	// const float x = -0.5;
 	// const float y = 0;
 	// const float r = 2;
-	// const int iterations = 6;
+	// const int iterations = 7;
 	// const int continousDistanceImprovmentSteps = 3;
+	// char* textureFileName = "snus.bmp";
+
+	// const float x = 0.4;
+	// const float y = 0.15;
+	// const float r = 0.1;
+	// const int iterations = 8;
+	// const int continousDistanceImprovmentSteps = 3;
+	// char* textureFileName = "slope-tiles.bmp";
+
+	const float x = -0.5;
+	const float y = 0;
+	const float r = 2;
+	const int iterations = 3;
+	const int continousDistanceImprovmentSteps = 1;
+	char* textureFileName = "slope-tiles.bmp";
+
+	loadBitmapImage(&texture, &textureHeight, &textureWidth, textureFileName);
 
 	float minX = x - r;
 	float maxX = x + r;
@@ -106,7 +146,6 @@ int main (int argc, const char * argv[]) {
 				.r = 0,
 				.i = 0,
 			};
-
 
 			int i = 0;
 
@@ -148,7 +187,7 @@ int main (int argc, const char * argv[]) {
 			v = (v+0.5) ;
 
 			Color color = {
-				.r = fmod(q, 1),
+				.r = q,
 				.g = v,
 				.b = 0,
 			};
@@ -163,9 +202,27 @@ int main (int argc, const char * argv[]) {
     int i, j;
     for(i=0; i<height; i++){
         for(j=0; j<width; j++){
-            image[(i*width + j) * 3 + 2] = clampAndChar(pixels[i][j].r);
-            image[(i*width + j) * 3 + 1] = clampAndChar(pixels[i][j].g);
-            image[(i*width + j) * 3 + 0] = clampAndChar(pixels[i][j].b);
+			Color color = pixels[i][j];
+            // image[(i*width + j) * 3 + 2] = clampAndChar(color.r);
+            // image[(i*width + j) * 3 + 1] = clampAndChar(color.g);
+            // image[(i*width + j) * 3 + 0] = clampAndChar(color.b);
+
+			double foo;
+			int texU = positiveModulo(color.r) * (textureWidth - 1);
+			int texV = color.g * (textureHeight - 1);
+
+			// const float lightness = 1 / (1 + color.r);
+			const float lightness = 1;
+			// float lightness = 1 / (1 + color.r);
+			// lightness = powf(lightness, 1.0/3);
+			// lightness = lightness *3 - 1;
+			// lightness = lightness > 1 ? 1 : lightness;
+			// lightness = lightness < 0 ? 0 : lightness;
+
+			unsigned char *sample = texture + (int)(floorf(texV + 0.5) * textureWidth + floorf(texU + 0.5)) * 4;
+            image[(i*width + j) * 3 + 2] = sample[2] * lightness;
+            image[(i*width + j) * 3 + 1] = sample[1] * lightness;
+            image[(i*width + j) * 3 + 0] = sample[0] * lightness;
         }
     }
 

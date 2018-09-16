@@ -1,6 +1,7 @@
 // https://stackoverflow.com/a/47785639/446536
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "bmp.h"
 
 const int bytesPerPixel = 3; /// red, green, blue
@@ -9,6 +10,46 @@ const int infoHeaderSize = 40;
 
 unsigned char* createBitmapFileHeader(int height, int width);
 unsigned char* createBitmapInfoHeader(int height, int width);
+
+void loadBitmapImage(unsigned char **image, int *height, int *width, char* imageFileName){
+
+    unsigned char* fileHeader = malloc(fileHeaderSize);
+    unsigned char* infoHeader = malloc(infoHeaderSize);
+
+    FILE* imageFile = fopen(imageFileName, "rb");
+
+    fread(fileHeader, 1, fileHeaderSize, imageFile);
+    fread(infoHeader, 1, infoHeaderSize, imageFile);
+
+    fprintf( stdout, "compression. %u, %u, %u, %u\n", infoHeader[16], infoHeader[17], infoHeader[18], infoHeader[19]);
+
+    fprintf( stdout, "Width. %u, %u, %u, %u\n", infoHeader[4], infoHeader[5], infoHeader[6], infoHeader[7]);
+    fprintf( stdout, "Height. %u, %u, %u, %u\n", infoHeader[8], infoHeader[9], infoHeader[10], infoHeader[11]);
+
+    *width = 
+        ((unsigned int) infoHeader[4]) |
+        ((unsigned int) infoHeader[5]) << 8 |
+        ((unsigned int) infoHeader[6]) << 16 |
+        ((unsigned int) infoHeader[7]) << 24;
+    
+    *height = 
+        ((unsigned int) infoHeader[8]) |
+        ((unsigned int) infoHeader[9]) << 8 |
+        ((unsigned int) infoHeader[10]) << 16 |
+        ((unsigned int) infoHeader[11]) << 24;
+
+    // Some images are stored upside-down, sigified by a negative height.
+    if(*height < 0){
+        *height = -*height;
+    }
+
+    const int  dataSize = *width * *height * 4;
+    fprintf( stdout, "Size. %i\n", dataSize);
+
+    *image = malloc(dataSize);
+    fread(*image, dataSize, 1, imageFile);
+    fclose(imageFile);
+}
 
 void generateBitmapImage(unsigned char *image, int height, int width, char* imageFileName){
 
