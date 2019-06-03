@@ -121,6 +121,16 @@ int main (int argc, const char * argv[]) {
 	// const int continousDistanceImprovmentSteps = 3;
 	// char* textureFileName = "slope-tiles.bmp";
 
+	// const float x = -0.815;
+	// const float y = -0.205;
+	// const float r = 0.005;
+	// const float x = -0.811;
+	// const float y = -0.2056;
+	// const float r = 0.003;
+	// const int iterations = 23;
+	// const int continousDistanceImprovmentSteps = 3;
+	// char* textureFileName = "puzzle.bmp";
+
 	const float x = -0.5;
 	const float y = 0;
 	const float r = 2;
