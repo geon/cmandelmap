@@ -197,17 +197,19 @@ int main (int argc, const char * argv[]) {
 			float angle = cAngle(z) / (M_PI * 2);
 			angle = (angle+0.5) ;
 
-            // image[(i*width + j) * 3 + 2] = clampAndChar(color.r);
-            // image[(i*width + j) * 3 + 1] = clampAndChar(color.g);
-            // image[(i*width + j) * 3 + 0] = clampAndChar(color.b);
-
 			int texU = positiveModulo(length) * (textureWidth - 1);
 			int texV = angle * (textureHeight - 1);
 
 			unsigned char *sample = texture + (int)(floorf(texV + 0.5) * textureWidth + floorf(texU + 0.5)) * 4;
-            image[(y*width + x) * 3 + 2] = sample[2];
-            image[(y*width + x) * 3 + 1] = sample[1];
-            image[(y*width + x) * 3 + 0] = sample[0];
+
+			Color color;
+            color.r = sample[2] / 255.0;
+            color.g = sample[1] / 255.0;
+            color.b = sample[0] / 255.0;
+
+            image[(y*width + x) * 3 + 2] = clampAndChar(color.r);
+            image[(y*width + x) * 3 + 1] = clampAndChar(color.g);
+            image[(y*width + x) * 3 + 0] = clampAndChar(color.b);
 		}
 	}
 
