@@ -221,20 +221,12 @@ int main (int argc, const char * argv[]) {
 			int texU = positiveModulo(color.r) * (textureWidth - 1);
 			int texV = color.g * (textureHeight - 1);
 
-			// const float lightness = 1 / (1 + color.r);
-			const float lightness = 1;
-			// float lightness = 1 / (1 + color.r);
-			// lightness = powf(lightness, 1.0/3);
-			// lightness = lightness *3 - 1;
-			// lightness = lightness > 1 ? 1 : lightness;
-			// lightness = lightness < 0 ? 0 : lightness;
-
 			unsigned char *sample = texture + (int)(floorf(texV + 0.5) * textureWidth + floorf(texU + 0.5)) * 4;
-            image[(i*width + j) * 3 + 2] = sample[2] * lightness;
-            image[(i*width + j) * 3 + 1] = sample[1] * lightness;
-            image[(i*width + j) * 3 + 0] = sample[0] * lightness;
-        }
-    }
+            image[(i*width + j) * 3 + 2] = sample[2];
+            image[(i*width + j) * 3 + 1] = sample[1];
+            image[(i*width + j) * 3 + 0] = sample[0];
+		}
+	}
 
     generateBitmapImage(image, height, width, imageFileName);
 
