@@ -73,6 +73,79 @@ float positiveModulo(float a) {
 	return a;
 }
 
+
+Color mandelMap (
+	float x,
+	float y,
+	int iterations,
+	int continousDistanceImprovmentSteps,
+	int textureWidth,
+	int textureHeight,
+	unsigned char * texture
+) {
+	Complex c = {
+		.r = x,
+		.i = y,
+	};
+
+	Complex z = {
+		.r = 0,
+		.i = 0,
+	};
+
+	int i = 0;
+
+	// The traditional Mandelbrot iterations.
+	for (; i < iterations - continousDistanceImprovmentSteps && cLengthSquared(z) < 2*2; ++i) {
+		z = cAdd(cMul(z, z), c);
+	}
+
+	// Do a couple of extra iterations to get a nice, smooth continous distance.
+	// http://linas.org/art-gallery/escape/escape.html
+	for (int stop = i + continousDistanceImprovmentSteps; i < stop; ++i) {
+		z = cAdd(cMul(z, z), c);
+	}
+
+	// The contious distance. Looks nice outside the Mandlebrot set.
+	float outsideLength = i + 1 - logf(logf(cLength(z))) / logf(2);
+
+	// More iterations until a fixed number, to get the angle.
+	const float cutoffDistance = 100;
+	for (; i < iterations; ++i) {
+		z = cAdd(cMul(z, z), c);
+
+		// Limit the growth of z, or it overflows the floats quickly.
+		const float zLength = cLength(z);
+		if (zLength > cutoffDistance) {
+			z.r = z.r / zLength * cutoffDistance;
+			z.i = z.i / zLength * cutoffDistance;
+		}
+	}
+
+	// This looks nice inside the Mandlebrot set.
+	float insideLength = cLength(z);
+
+	// Combining inside and outside. Since `u` gets smaller, while `w` gets
+	// larger further away from origo, they can be combined with a simple min.
+	float length = fmin(insideLength, outsideLength);
+
+	float angle = cAngle(z) / (M_PI * 2);
+	angle = (angle+0.5) ;
+
+	int texU = positiveModulo(length) * (textureWidth - 1);
+	int texV = angle * (textureHeight - 1);
+
+	unsigned char *sample = texture + (int)(floorf(texV + 0.5) * textureWidth + floorf(texU + 0.5)) * 4;
+
+	Color color;
+	color.r = sample[2] / 255.0;
+	color.g = sample[1] / 255.0;
+	color.b = sample[0] / 255.0;
+
+	return color;
+}
+
+
 // Segfaults if allocated on the stack.
 const int width = 1000;
 const int height = 1000;
@@ -148,64 +221,16 @@ int main (int argc, const char * argv[]) {
 
 	for (int y = 0; y < height; ++y) {
 		for (int x = 0; x < width; ++x) {
-			Complex c = {
-				.r = minX + ((maxX - minX) * x) / width,
-				.i = minY + ((maxY - minY) * y) / height,
-			};
 
-			Complex z = {
-				.r = 0,
-				.i = 0,
-			};
-
-			int i = 0;
-
-			// The traditional Mandelbrot iterations.
-			for (; i < iterations - continousDistanceImprovmentSteps && cLengthSquared(z) < 2*2; ++i) {
-				z = cAdd(cMul(z, z), c);
-			}
-
-			// Do a couple of extra iterations to get a nice, smooth continous distance.
-			// http://linas.org/art-gallery/escape/escape.html
-			for (int stop = i + continousDistanceImprovmentSteps; i < stop; ++i) {
-				z = cAdd(cMul(z, z), c);
-			}
-
-			// The contious distance. Looks nice outside the Mandlebrot set.
-			float outsideLength = i + 1 - logf(logf(cLength(z))) / logf(2);
-
-			// More iterations until a fixed number, to get the angle.
-			const float cutoffDistance = 100;
-			for (; i < iterations; ++i) {
-				z = cAdd(cMul(z, z), c);
-
-				// Limit the growth of z, or it overflows the floats quickly.
-				const float zLength = cLength(z);
-				if (zLength > cutoffDistance) {
-					z.r = z.r / zLength * cutoffDistance;
-					z.i = z.i / zLength * cutoffDistance;
-				}
-			}
-
-			// This looks nice inside the Mandlebrot set.
-			float insideLength = cLength(z);
-
-			// Combining inside and outside. Since `u` gets smaller, while `w` gets
-			// larger further away from origo, they can be combined with a simple min.
-			float length = fmin(insideLength, outsideLength);
-		
-			float angle = cAngle(z) / (M_PI * 2);
-			angle = (angle+0.5) ;
-
-			int texU = positiveModulo(length) * (textureWidth - 1);
-			int texV = angle * (textureHeight - 1);
-
-			unsigned char *sample = texture + (int)(floorf(texV + 0.5) * textureWidth + floorf(texU + 0.5)) * 4;
-
-			Color color;
-            color.r = sample[2] / 255.0;
-            color.g = sample[1] / 255.0;
-            color.b = sample[0] / 255.0;
+			Color color = mandelMap(
+				minX + ((maxX - minX) * x) / width,
+				minY + ((maxY - minY) * y) / height,
+				iterations,
+				continousDistanceImprovmentSteps,
+				textureWidth,
+				textureHeight,
+				texture
+			);
 
             image[(y*width + x) * 3 + 2] = clampAndChar(color.r);
             image[(y*width + x) * 3 + 1] = clampAndChar(color.g);
