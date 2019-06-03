@@ -201,7 +201,6 @@ int main (int argc, const char * argv[]) {
             // image[(i*width + j) * 3 + 1] = clampAndChar(color.g);
             // image[(i*width + j) * 3 + 0] = clampAndChar(color.b);
 
-			double foo;
 			int texU = positiveModulo(length) * (textureWidth - 1);
 			int texV = angle * (textureHeight - 1);
 
