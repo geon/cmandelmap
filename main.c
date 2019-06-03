@@ -172,7 +172,7 @@ int main (int argc, const char * argv[]) {
 			}
 
 			// The contious distance. Looks nice outside the Mandlebrot set.
-			float u = i + 1 - logf(logf(cLength(z))) / logf(2);
+			float outsideLength = i + 1 - logf(logf(cLength(z))) / logf(2);
 
 			// More iterations until a fixed number, to get the angle.
 			const float cutoffDistance = 100;
@@ -188,22 +188,22 @@ int main (int argc, const char * argv[]) {
 			}
 
 			// This looks nice inside the Mandlebrot set.
-			float w = cLength(z);
+			float insideLength = cLength(z);
 
 			// Combining inside and outside. Since `u` gets smaller, while `w` gets
 			// larger further away from origo, they can be combined with a simple min.
-			float q = fmin(w, u);
+			float length = fmin(insideLength, outsideLength);
 		
-			float v = cAngle(z) / (M_PI * 2);
-			v = (v+0.5) ;
+			float angle = cAngle(z) / (M_PI * 2);
+			angle = (angle+0.5) ;
 
             // image[(i*width + j) * 3 + 2] = clampAndChar(color.r);
             // image[(i*width + j) * 3 + 1] = clampAndChar(color.g);
             // image[(i*width + j) * 3 + 0] = clampAndChar(color.b);
 
 			double foo;
-			int texU = positiveModulo(q) * (textureWidth - 1);
-			int texV = v * (textureHeight - 1);
+			int texU = positiveModulo(length) * (textureWidth - 1);
+			int texV = angle * (textureHeight - 1);
 
 			unsigned char *sample = texture + (int)(floorf(texV + 0.5) * textureWidth + floorf(texU + 0.5)) * 4;
             image[(y*width + x) * 3 + 2] = sample[2];
