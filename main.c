@@ -166,6 +166,14 @@ int main (int argc, const char * argv[]) {
 	// const int continousDistanceImprovmentSteps = 3;
 	// char* textureFileName = "fruit.bmp";
 
+	// const float x = -0.90065;
+	// const float y = 0.2579;
+	// const float r = 0.00065;
+	// const int iterations = 33;
+	// const int continousDistanceImprovmentSteps = 3;
+	// char* textureFileName = "ripley.bmp";
+	// http://www.chacuncherchesonfilm.fr/storage/films/f0/f03aaad5-d8b9-4cec-b299-ad2b53f266e8.jpg
+
 	// const float x = -0.727;
 	// const float y = 0.282;
 	// const float r = 0.01;
@@ -210,6 +218,12 @@ int main (int argc, const char * argv[]) {
 	const int iterations = 3;
 	const int continousDistanceImprovmentSteps = 1;
 	char* textureFileName = "slope-tiles.bmp";
+	// const float x = -0.5;
+	// const float y = 0;
+	// const float r = 2;
+	// const int iterations = 3;
+	// const int continousDistanceImprovmentSteps = 1;
+	// char* textureFileName = "slope-tiles.bmp";
 
 	loadBitmapImage(&texture, &textureHeight, &textureWidth, textureFileName);
     unsigned char* image = malloc(height * width * 3);
